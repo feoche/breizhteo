@@ -11,6 +11,10 @@ const data = {
         "N_W1_0-N_5": "🌤",     // Sun with small cloud
         "J_W1_0-N_1": "🌥",     // Sun with cloud
         "J_W1_18-N_1": "🌦",    // Sun with cloud and rain
+    },
+    BOUNDS: {
+        x: [175, 600],
+        y: [65, 370]
     }
 };
 
