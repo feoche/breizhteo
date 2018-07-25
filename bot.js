@@ -33,7 +33,20 @@ function tweet(text) {
 function init() {
     // http://www.meteofrance.com/mf3-rpc-portlet/rest/carte/france/REG_FRANCE/REGIN05?echeance=201807260000&nightMode=true
     request('http://www.meteofrance.com/mf3-rpc-portlet/rest/carte/france/REG_FRANCE/REGIN05?echeance=201807260000', (error, response, body) => {
+        if(error) {
+            console.error('Error: ', error);
+        }
         console.log('body:', body.previsionLieux);
+        let items = response.previsionLieux.sort((a,b) => {
+            const ay = a.lieu.positionAffichageCarteY,
+                by = b.lieu.a.lieu.positionAffichageCarteY,
+                ax = a.lieu.positionAffichageCarteX,
+                bx = b.lieu.a.lieu.positionAffichageCarteX;
+            if(ay < by && ax < bx) {
+                return -1;
+            }
+            return 0;
+        });
     });
 
     let weather = ['☀'];
