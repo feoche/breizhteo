@@ -12,10 +12,60 @@ const data = {
         "J_W1_0-N_1": "🌥",     // Sun with cloud
         "J_W1_18-N_1": "🌦",    // Sun with cloud and rain
     },
-    BOUNDS: {
-        x: [175, 600],
-        y: [65, 370]
-    }
+    DATACITIES: [
+        // 1st row
+        "saint-pol-de-leon",
+        "lannion",
+        "lannion",
+        // 2nd row - 1st part
+        "brest",
+        "saint-pol-de-leon",
+        "saint-hernin",
+        "saint-hernin",
+        "saint-brieuc",
+        "saint-brieuc",
+        // 2nd row - 2nd part
+        "saint-malo",
+        "saint-malo",
+        // 3rd row
+        "brest",
+        "saint-hernin",
+        "saint-hernin",
+        "saint-brieuc",
+        "saint-brieuc",
+        "saint-malo",
+        "rennes",
+        "fougeres",
+        // 4th row
+        "ile-de-sein",
+        "ile-de-sein",
+        "quimper",
+        "lorient",
+        "pontivy",
+        "pontivy",
+        "taupont",
+        "rennes",
+        "fougeres",
+        // 5th row
+        "quimper",
+        "quimper",
+        "lorient",
+        "lorient",
+        "taupont",
+        "rennes",
+        "rennes",
+        "saint-saturnin-du-limet",
+        // 6th row
+        "lorient",
+        "vannes",
+        "vannes",
+        "rennes",
+        "saint-saturnin-du-limet",
+        // 7th row
+        "vannes",
+        "redon",
+        "redon"
+    ]
 };
 
 export {data};
