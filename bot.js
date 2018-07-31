@@ -22,13 +22,18 @@ init();
 
 function init() {
   console.log(`Started`);
-  queryWeather().then(res => {
-    console.info('prevision : ', data);
-    tweet(`Prévisions pour ${res}:
-    ${textToWeather('pictoTemps')}
-    ${textToWeather('temperature')}
-    ${textToWeather('pictoVent')}
-    `);
+  const time = moment().format('YYYYMMDD') + ('00' + (data.HOURS.filter(a => a.time >= moment().get('hours'))[0] || data.HOURS[0]).time).substr(-2, 2);
+
+  // http://www.meteofrance.com/mf3-rpc-portlet/rest/carte/france/REG_FRANCE/REGIN05?echeance=201807260000&nightMode=true
+  queryWeather(`http://www.meteofrance.com/mf3-rpc-portlet/rest/carte/france/REG_FRANCE/REGIN05?echeance=${time}00`).then(res => {
+    queryWeather(`http://www.meteofrance.com/mf3-rpc-portlet/rest/carte/plages/RIVAGE/MER002?echeance=${time}00`).then(res2 => {
+
+      console.info("dataItems : ", dataItems);
+
+      tweet(`Prévisions pour ${res}:
+      ${textToWeather('temperatureMer')}
+      `);
+     });
   });
 }
 
@@ -45,9 +50,9 @@ function tweet(text) {
   }
 }
 
-function queryWeather() {
-  // http://www.meteofrance.com/mf3-rpc-portlet/rest/carte/france/REG_FRANCE/REGIN05?echeance=201807260000&nightMode=true
-  const url = `http://www.meteofrance.com/mf3-rpc-portlet/rest/carte/france/REG_FRANCE/REGIN05?echeance=${moment().format('YYYYMMDD') + ('00' + (data.HOURS.filter(a => a.time >= moment().get('hours'))[0] || data.HOURS[0]).time).substr(-2, 2)}00`;
+let concatAndDeDuplicateObjectsDeep = (p, ...arrs) => [ ...new Set( [].concat(...arrs).map(a => JSON.stringify(a)) ) ].map(a => JSON.parse(a));
+
+function queryWeather(url) {
   console.info('url : ', url);
   return new Promise((resolve, reject) => {
     request(url, (error, response, body) => {
@@ -55,17 +60,17 @@ function queryWeather() {
         reject(error);
         console.error('Error: ', error);
       }
-      dataItems = JSON.parse(body).previsionLieux
+      console.info("JSON.parse(body).previsionLieux : ", JSON.parse(body).previsionLieux);
+      dataItems = concatAndDeDuplicateObjectsDeep('slug', dataItems, JSON.parse(body).previsionLieux
         .map(a => ({
           'slug': a.lieu.slug,
-          'x': a.lieu.positionAffichageCarteX,
-          'y': a.lieu.positionAffichageCarteY,
           'pictoTemps': a.prevision.pictoTemps,
           'temperature': a.prevision.temperature,
+          'temperatureMer': a.prevision.temperatureMer,
           'pictoVent': a.prevision.pictoVent,
           'forceVent': a.prevision.forceDuVentMoyenne
         }))
-        .filter(a => data.DATACITIES.includes(a.slug) && a.temperature)
+        .filter(a => data.DATACITIES.includes(a.slug) && a.temperature))
       ;
 
       // console.info('dataItems : ', dataItems);
@@ -75,6 +80,7 @@ function queryWeather() {
 }
 
 function weather(index) {
+  console.info("dataItems[index] : ", dataItems[index]);
   console.info('dataItems.filter(a,i => i === dataItems[index]) : ', dataItems.filter(a => a.slug === data.DATACITIES[index]));
   return dataItems.filter(a => a.slug === data.DATACITIES[index])[0];
 }
@@ -82,36 +88,43 @@ function weather(index) {
 function textToWeather(type) {
   let index = 0, previousSpace = false;
   return data.MAP.split('').map(a => {
-    if (a === '#') {
-      let w, wcity = weather(index)[type];
-      switch (type) {
-        case 'temperature' :
-          w = '';
-          if (previousSpace) {
-            previousSpace = false;
-          }
-          else {
-            w += '\u2003';
-          }
-          w += ('' + wcity).replace(/\w/g, a => data.TEMPERATURES[a]);
-          console.info("w : ", w);
-          break;
-        case 'pictoVent' :
-          const wforce = weather(index)['forceVent'].replace(/[\s<]/g, '').padStart(2, "0");
-          const emoji = data.WINDS.filter(a => a.codes.includes(wcity))[0].emojis;
-          w = emoji[Math.min(emoji.length-1, Math.max(0, Math.floor(wforce[0]) - 1))];
-          break;
-        case 'pictoTemps' :
-        default:
-          w = data.WEATHER.filter(a => a.codes.includes(wcity))[0].emojis[0];
-          break;
-      }
-      index++;
-      return w;
-    }
-    else { // the char is a space char
-      previousSpace = true;
-      return a;
+    switch(a) {
+      case '#':
+      case 'w':
+        let point, wcity = weather(index)[type];
+        switch (type) {
+          case 'temperature' :
+          case 'temperatureMer' :
+            if(wcity > -1) {
+              point = '';
+              if (previousSpace) {
+                previousSpace = false;
+              }
+              else {
+                point += '\u2003';
+              }
+              point += ('' + wcity).replace(/\w/g, a => data.SMALL_LETTERS[a]);
+            }
+            else {
+              point = '🌊';
+            }
+            break;
+          case 'pictoVent' :
+            const wforce = weather(index)['forceVent'].replace(/[\s<]/g, '').padStart(2, "0");
+            const emoji = data.WINDS.filter(a => a.codes.includes(wcity))[0].emojis;
+            point = emoji[Math.min(emoji.length-1, Math.max(0, Math.floor(wforce[0]) - 1))];
+            break;
+          case 'pictoTemps' :
+          default:
+            point = data.WEATHER.filter(a => a.codes.includes(wcity))[0].emojis[0];
+            break;
+        }
+        index++;
+        return point;
+
+      default : // the char is a space char
+        previousSpace = true;
+        return a;
     }
   }).join('');
 }

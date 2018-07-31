@@ -1,3 +1,5 @@
+const tab = '\u2003',
+  spa = '\u2002';
 const data = {
   WEATHER: [
     {codes: ["J_W1_0-N_3", "J_W2_3", "N_W1_0-N_3", "N_W2_3"], emojis: ["☁"]},      // Cloud
@@ -61,15 +63,17 @@ const data = {
     {time: 18, label: "17h -> 20h"},
     {time: 21, label: "20h -> 23h"}
   ],
-  MAP: `\u2003\xa0\xa0###
-######\u2003####
-\u2003\xa0##########
-###########
-\u2003\u2003\xa0#########
-\u2003\u2003\u2003\u2003\u2003\xa0\xa0\xa0######
-\u2003\u2003\u2003\u2003\u2003\u2003\u2003\xa0\xa0\xa0###`,
+  MAP: [
+    tab,spa,'#','#','#','\n',
+    '#','#','#','#','#','#',tab,'#','#','#','#','\n',
+    tab,spa,'#','#','#','#','#','#','#','#','#','#','\n',
+    '#','#','#','#','#','#','#','#','#','#','#','\n',
+    tab,tab,spa,'#','#','#','#','#','#','#','#','#','\n',
+    tab,tab,tab,tab,tab,tab,'#','#','#','#','#','#','\n',
+    tab,tab,tab,tab,tab,tab,tab,tab,'#','#','#'
+  ].join(''),
   DATACITIES: [
-    "saint-pol-de-leon", "lannion", "lannion",
+    "saint-pol-de-leon", "lannion", "perros-guirec",
     // 2nd row - 1st part
     "brest", "saint-pol-de-leon", "saint-hernin", "saint-hernin", "saint-brieuc", "saint-brieuc",
     // 2nd row - 2nd part
@@ -77,15 +81,15 @@ const data = {
     // 3rd row
     "brest", "saint-hernin", "saint-hernin", "saint-brieuc", "saint-brieuc", "saint-malo", "rennes", "fougeres", "fougeres", "fougeres",
     // 4th row
-    "ile-de-sein", "ile-de-sein", "quimper", "lorient", "pontivy", "pontivy", "taupont", "rennes", "rennes", "rennes", "fougeres",
+    "plozevet", "plozevet", "quimper", "lorient", "pontivy", "pontivy", "taupont", "rennes", "rennes", "rennes", "fougeres",
     // 5th row
     "quimper", "quimper", "lorient", "lorient", "taupont", "rennes", "rennes", "rennes", "saint-saturnin-du-limet",
     // 6th row
     "lorient", "vannes", "vannes", "rennes", "saint-saturnin-du-limet", "saint-saturnin-du-limet",
     // 7th row
-    "vannes", "redon", "redon"
+    "quiberon", "redon", "redon"
   ],
-  TEMPERATURES: "⁰¹²³⁴⁵⁶⁷⁸⁹".split('')
+  SMALL_LETTERS: "⁰¹²³⁴⁵⁶⁷⁸⁹".split('')
 };
 
 export {data};
