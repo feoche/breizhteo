@@ -20,7 +20,8 @@
     "minimist": "^1.2.0",
     "moment": "^2.22.2",
     "socket.io": "^2.1.1",
-    "twitter": "^1.7.1"
+    "twitter": "^1.7.1",
+    "request": "latest"
   },
   "devDependencies": {
     "eslint": "^4.19.1",
