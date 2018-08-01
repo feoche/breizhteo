@@ -1,27 +1,49 @@
 const data = {
+  URLS: [
+    `http://www.meteofrance.com/mf3-rpc-portlet/rest/carte/france/REG_FRANCE/REGIN05?echeance=$time$00`,
+    `http://www.meteofrance.com/mf3-rpc-portlet/rest/carte/plages/RIVAGE/MER002?echeance=$time$00`
+  ],
   WEATHER: [
-    {codes: ["J_W1_0-N_3", "J_W2_3", "N_W1_0-N_3", "N_W2_3"], emojis: ["☁"]},      // Cloud
-    {
-      codes: ["J_W1_1-N", "J_W1_1-N_0", "J_W1_1-N_1", "J_W1_1-N_2", "J_W1_1-N_3", "J_W1_1-N_4", "J_W1_1-N_5", "J_W1_1-N_6", "J_W1_1-N_7", "J_W1_1-N_8", "J_W1_1-N_9", "J_W1_2-N", "J_W1_2-N_0", "J_W1_2-N_1", "J_W1_2-N_2", "J_W1_2-N_3", "J_W1_2-N_4", "J_W1_2-N_5", "J_W1_2-N_6", "J_W1_2-N_7", "J_W1_2-N_8", "J_W1_2-N_9", "J_W1_33-N", "J_W1_33-N_0", "J_W1_33-N_1", "J_W1_33-N_2", "J_W1_33-N_3", "J_W1_33-N_4", "J_W1_33-N_5", "J_W1_33-N_6", "J_W1_33-N_7", "J_W1_33-N_8", "J_W1_33-N_9", "N_W1_1-N", "N_W1_1-N_0", "N_W1_1-N_1", "N_W1_1-N_2", "N_W1_1-N_3", "N_W1_1-N_4", "N_W1_1-N_5", "N_W1_1-N_6", "N_W1_1-N_7", "N_W1_1-N_8", "N_W1_1-N_9", "N_W1_2-N", "N_W1_2-N_0", "N_W1_2-N_1", "N_W1_2-N_2", "N_W1_2-N_3", "N_W1_2-N_4", "N_W1_2-N_5", "N_W1_2-N_6", "N_W1_2-N_7", "N_W1_2-N_8", "N_W1_2-N_9", "N_W1_33-N", "N_W1_33-N_0", "N_W1_33-N_1", "N_W1_33-N_2", "N_W1_33-N_3", "N_W1_33-N_4", "N_W1_33-N_5", "N_W1_33-N_6", "N_W1_33-N_7", "N_W1_33-N_8", "N_W1_33-N_9",],
+    { // Cloud
+      codes: /\b[JN]_W[12]_(?:3|0-N_3)\b/gm,
+      emojis: ["☁"]
+    },
+    { // Fog
+      codes: /\b[JN]_W1_(?:1|2|33)-N(?:_[0-9])?\b/gm,
       emojis: ["🌫"]
-    },     // Fog
-    {
-      codes: ["J_W1_24-N", "J_W1_24-N_0", "J_W1_24-N_1", "J_W1_24-N_2", "J_W1_24-N_3", "J_W1_24-N_4", "J_W1_24-N_5", "J_W1_24-N_6", "J_W1_24-N_7", "J_W1_24-N_8", "J_W1_24-N_9", "J_W1_26-N", "J_W1_26-N_0", "J_W1_26-N_1", "J_W1_26-N_2", "J_W1_26-N_3", "J_W1_26-N_4", "J_W1_26-N_5", "J_W1_26-N_6", "J_W1_26-N_7", "J_W1_26-N_8", "J_W1_26-N_9", "J_W1_31-N", "J_W1_31-N_0", "J_W1_31-N_1", "J_W1_31-N_2", "J_W1_31-N_3", "J_W1_31-N_4", "J_W1_31-N_5", "J_W1_31-N_6", "J_W1_31-N_7", "J_W1_31-N_8", "J_W1_31-N_9", "J_W2_18", "N_W1_24-N", "N_W1_24-N_0", "N_W1_24-N_1", "N_W1_24-N_2", "N_W1_24-N_3", "N_W1_24-N_4", "N_W1_24-N_5", "N_W1_24-N_6", "N_W1_24-N_7", "N_W1_24-N_8", "N_W1_24-N_9", "N_W1_26-N", "N_W1_26-N_0", "N_W1_26-N_1", "N_W1_26-N_2", "N_W1_26-N_3", "N_W1_26-N_4", "N_W1_26-N_5", "N_W1_26-N_6", "N_W1_26-N_7", "N_W1_26-N_8", "N_W1_26-N_9", "N_W1_31-N", "N_W1_31-N_0", "N_W1_31-N_1", "N_W1_31-N_2", "N_W1_31-N_3", "N_W1_31-N_4", "N_W1_31-N_5", "N_W1_31-N_6", "N_W1_31-N_7", "N_W1_31-N_8", "N_W1_31-N_9", "N_W2_18"],
+    },
+    { // Lightning
+      codes: /\b[JN]_W(?:1_(?:24|26|31)-N(?:_[0-9])?|2_18)\b/gm,
       emojis: ["🌩"]
-    },    // Lightning
-    {codes: ["J_W1_32", "J_W2_16", "N_W1_32", "N_W2_16"], emojis: ["⛈"]},    // Lightning with rain
-    {codes: ["J_W1_9-N_3", "J_W1_18-N_3", "J_W1_30-N_3", "N_W1_9-N_3", "N_W1_18-N_3", "N_W1_30-N_3"], emojis: ["🌧"]},     // Rain
-    {codes: ["snow"], emojis: ["🌨"]},
-    {codes: ["J_W1_0-N_0", "J_W1_0-N_7", "J_W2_1", "N_W1_0-N_0", "N_W1_0-N_7", "N_W2_1"], emojis: ["☀"]},      // Sun
-    {codes: ["J_W1_0-N_5", "N_W1_0-N_5"], emojis: ["🌤"]},     // Sun with small cloud
-    {
-      codes: ["J_W1_0-N_1", "J_W1_0-N_2", "J_W1_0-N_4", "J_W1_0-N_6", "J_W2_2", "N_W1_0-N_1", "N_W1_0-N_2", "N_W1_0-N_4", "N_W1_0-N_6", "N_W2_2"],
+    },
+    { // Lightning with rain
+      codes: /\b[JN]_W[12]_(?:16|32)\b/gm,
+      emojis: ["⛈"]
+    },
+    { // Rain
+      codes: /\b[JN]_W1_(?:9|18|30)-N_3\b/gm,
+      emojis: ["🌧"]
+    },
+    { // Snow
+      codes: ["snow"],
+      emojis: ["🌨"]
+    },
+    { // Sun
+      codes: /\b[JN]_W[12]_(?:1|0-N_[07])\b/gm,
+      emojis: ["☀"]
+    },
+    { // Sun with small cloud
+      codes: /\b[JN]_W1_0-N_5\b/gm,
+      emojis: ["🌤"]
+    },
+    { // Sun with cloud
+      codes: /\b[JN]_W1_0-N_5\b/gm,
       emojis: ["🌥"]
-    },     // Sun with cloud
-    {
-      codes: ["J_W1_9-N", "J_W1_9-N_0", "J_W1_9-N_1", "J_W1_9-N_2", "J_W1_9-N_3", "J_W1_9-N_4", "J_W1_9-N_5", "J_W1_9-N_6", "J_W1_9-N_7", "J_W1_9-N_8", "J_W1_9-N_9", "J_W1_18-N", "J_W1_18-N_0", "J_W1_18-N_1", "J_W1_18-N_2", "J_W1_18-N_3", "J_W1_18-N_4", "J_W1_18-N_5", "J_W1_18-N_6", "J_W1_18-N_7", "J_W1_18-N_8", "J_W1_18-N_9", "J_W1_30-N", "J_W1_30-N_0", "J_W1_30-N_1", "J_W1_30-N_2", "J_W1_30-N_3", "J_W1_30-N_4", "J_W1_30-N_5", "J_W1_30-N_6", "J_W1_30-N_7", "J_W1_30-N_8", "J_W1_30-N_9", "J_W2_6", "J_W2_12", "N_W1_9-N", "N_W1_9-N_0", "N_W1_9-N_1", "N_W1_9-N_2", "N_W1_9-N_3", "N_W1_9-N_4", "N_W1_9-N_5", "N_W1_9-N_6", "N_W1_9-N_7", "N_W1_9-N_8", "N_W1_9-N_9", "N_W1_18-N", "N_W1_18-N_0", "N_W1_18-N_1", "N_W1_18-N_2", "N_W1_18-N_3", "N_W1_18-N_4", "N_W1_18-N_5", "N_W1_18-N_6", "N_W1_18-N_7", "N_W1_18-N_8", "N_W1_18-N_9", "N_W1_30-N", "N_W1_30-N_0", "N_W1_30-N_1", "N_W1_30-N_2", "N_W1_30-N_3", "N_W1_30-N_4", "N_W1_30-N_5", "N_W1_30-N_6", "N_W1_30-N_7", "N_W1_30-N_8", "N_W1_30-N_9", "N_W2_6", "N_W2_12"],
+    },
+    { // Sun with cloud and rain
+      codes: /\b[JN]_W(?:1_(?:9|18|30)-N(?:_[0-24-9])?|2_(?:6|12))\b/gm,
       emojis: ["🌦"]
-    },    // Sun with cloud and rain
+    },
   ],
   WINDS: [{
     codes: ["V_S", "V_SSO", "V_SSE"],
@@ -66,14 +88,14 @@ const data = {
     _w####w####
     w##########
     __ww#######
-    _____ww####
+    ______ww####
     ________www`,
   DATACITIES: [
     "saint-pol-de-leon", "lannion", "perros-guirec",
     // 2nd row - 1st part
     "brest", "saint-pol-de-leon", "saint-hernin", "saint-hernin", "saint-brieuc", "saint-brieuc",
     // 2nd row - 2nd part
-    "saint-malo", "saint-malo", "fougeres", "fougeres",
+    "erquy", "saint-malo", "saint-malo", "fougeres",
     // 3rd row
     "brest", "saint-hernin", "saint-hernin", "saint-brieuc", "saint-brieuc", "saint-malo", "rennes", "fougeres", "fougeres", "fougeres",
     // 4th row
