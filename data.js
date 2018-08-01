@@ -1,5 +1,3 @@
-const tab = '\u2003',
-  spa = '\u2002';
 const data = {
   WEATHER: [
     {codes: ["J_W1_0-N_3", "J_W2_3", "N_W1_0-N_3", "N_W2_3"], emojis: ["☁"]},      // Cloud
@@ -63,15 +61,13 @@ const data = {
     {time: 18, label: "17h -> 20h"},
     {time: 21, label: "20h -> 23h"}
   ],
-  MAP: [
-    tab,spa,'#','#','#','\n',
-    '#','#','#','#','#','#',tab,'#','#','#','#','\n',
-    tab,spa,'#','#','#','#','#','#','#','#','#','#','\n',
-    '#','#','#','#','#','#','#','#','#','#','#','\n',
-    tab,tab,spa,'#','#','#','#','#','#','#','#','#','\n',
-    tab,tab,tab,tab,tab,tab,'#','#','#','#','#','#','\n',
-    tab,tab,tab,tab,tab,tab,tab,tab,'#','#','#'
-  ].join(''),
+  MAP: `_www____
+    w###ww_wwww
+    _w####w####
+    w##########
+    __ww#######
+    _____ww####
+    ________www`,
   DATACITIES: [
     "saint-pol-de-leon", "lannion", "perros-guirec",
     // 2nd row - 1st part

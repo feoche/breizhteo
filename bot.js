@@ -1,6 +1,6 @@
 import Twitter from 'twitter';
 import minimist from 'minimist';
-import cp from 'child_process';
+import clipboardy from 'clipboardy';
 import request from 'request';
 import moment from 'moment';
 import {data} from './data.js';
@@ -8,7 +8,6 @@ import {data} from './data.js';
 // Retrieve args
 const args = minimist(process.argv.slice(2));
 let dataItems = [];
-let copy = cp.spawn('pbcopy');
 
 // create an object using the keys we just determined
 const twitterAPI = new Twitter({
@@ -31,6 +30,9 @@ function init() {
       console.info("dataItems : ", dataItems);
 
       tweet(`Prévisions pour ${res}:
+      ${textToWeather('pictoTemps')}
+      ${textToWeather('temperature')}
+      ${textToWeather('pictoVent')}
       ${textToWeather('temperatureMer')}
       `);
      });
@@ -39,8 +41,8 @@ function init() {
 
 function tweet(text) {
   console.info(text);
-  copy.stdin.write(text);
-  copy.stdin.end();
+  clipboardy.writeSync(text);
+  clipboardy.readSync();
   if (!args.test) { // TWEET
     twitterAPI.post('statuses/update', {
         status: text.substring(0, 280)
@@ -49,8 +51,6 @@ function tweet(text) {
     );
   }
 }
-
-let concatAndDeDuplicateObjectsDeep = (p, ...arrs) => [ ...new Set( [].concat(...arrs).map(a => JSON.stringify(a)) ) ].map(a => JSON.parse(a));
 
 function queryWeather(url) {
   console.info('url : ', url);
@@ -61,16 +61,17 @@ function queryWeather(url) {
         console.error('Error: ', error);
       }
       console.info("JSON.parse(body).previsionLieux : ", JSON.parse(body).previsionLieux);
+      let concatAndDeDuplicateObjectsDeep = (p, ...arrs) => [ ...new Set( [].concat(...arrs).map(a => JSON.stringify(a)) ) ].map(a => JSON.parse(a));
       dataItems = concatAndDeDuplicateObjectsDeep('slug', dataItems, JSON.parse(body).previsionLieux
-        .map(a => ({
-          'slug': a.lieu.slug,
-          'pictoTemps': a.prevision.pictoTemps,
-          'temperature': a.prevision.temperature,
-          'temperatureMer': a.prevision.temperatureMer,
-          'pictoVent': a.prevision.pictoVent,
-          'forceVent': a.prevision.forceDuVentMoyenne
-        }))
-        .filter(a => data.DATACITIES.includes(a.slug) && a.temperature))
+          .map(a => ({
+              'slug': a.lieu.slug,
+              'pictoTemps': a.prevision.pictoTemps,
+              'temperature': a.prevision.temperature,
+              'temperatureMer': a.prevision.temperatureMer,
+              'pictoVent': a.prevision.pictoVent,
+              'forceVent': a.prevision.forceDuVentMoyenne
+          }))
+          .filter(a => data.DATACITIES.includes(a.slug) && a.temperature))
       ;
 
       // console.info('dataItems : ', dataItems);
@@ -100,13 +101,14 @@ function textToWeather(type) {
               if (previousSpace) {
                 previousSpace = false;
               }
-              else {
+              else if (type !== 'temperatureMer') {
                 point += '\u2003';
               }
               point += ('' + wcity).replace(/\w/g, a => data.SMALL_LETTERS[a]);
+              point += type === 'temperatureMer'? data.WEATHER.filter(a => a.codes.includes(weather(index)['pictoTemps']))[0].emojis[0] : '';
             }
             else {
-              point = '🌊';
+              point = a==='w'? '🌊':'🏖';
             }
             break;
           case 'pictoVent' :
@@ -121,8 +123,13 @@ function textToWeather(type) {
         }
         index++;
         return point;
-
-      default : // the char is a space char
+      case '_':
+        previousSpace = true;
+        return '\u2003';
+      case '-':
+        previousSpace = true;
+        return '\u2002';
+      default:
         previousSpace = true;
         return a;
     }
