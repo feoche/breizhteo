@@ -29,6 +29,9 @@ function init() {
 
       tweet(`Prévisions pour ${res}:
       ${textToWeather('pictoTemps')}
+      ${textToWeather('temperature')}
+      ${textToWeather('pictoVent')}
+      ${textToWeather('temperatureMer')}
       `);
     });
   });
@@ -51,13 +54,14 @@ function mergeArrays(arr1, arr2) {
   let res = [];
   for (let i = 0; i < arr1.length; i++) {
     let found = false;
-      let a = arr1[i];
+    const a = arr1[i];
     for (let j = 0; j < arr2.length; j++) {
-      let b = arr2[j];
+      const b = arr2[j];
       if (a.slug === b.slug) {
         found = true;
         res.push({
           slug: a.slug,
+          pictoTemps: a.pictoTemps,
           temperature: Math.max(a.temperature, b.temperature),
           temperatureMer: Math.max(a.temperatureMer, b.temperatureMer),
           pictoVent: a.pictoVent,
@@ -153,12 +157,13 @@ function textToWeather(type) {
             }
             break;
           case 'pictoVent' :
-            const wforce = weather(index)['forceVent'].replace(/[\s<]/g, '').padStart(2, "0");
+            const wforce = (''+weather(index)['forceVent']).replace(/[\s<]/g, '').padStart(2, "0");
             const emoji = data.WINDS.filter(a => a.codes.includes(wcity))[0].emojis;
             point = emoji[Math.min(emoji.length - 1, Math.max(0, Math.floor(wforce[0]) - 1))];
             break;
           case 'pictoTemps' :
           default:
+            console.info("wcity: ", index);
             point = data.WEATHER.filter(a => wcity.match(a.codes))[0].emojis[0];
             break;
         }
