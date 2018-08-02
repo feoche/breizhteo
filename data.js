@@ -25,12 +25,20 @@ const data = {
       emojis: ["🌧"]
     },
     { // Snow
-      codes: ["snow"],
-      emojis: ["🌨"]
+      codes: /\b[JN]_W[12]_(?:11|15|16|17|22)-N(?:_3)?\b/gm,
+      emojis: ["❄️"]
+    },
+    { // Snow with clouds
+      codes: /\b[JN]_W[12]_(?:(?:7|10|13|14|15|19|20)|(?:13|21)-N_3)\b/gm,
+      emojis: ["🌨️"]
     },
     { // Sun
-      codes: /\b[JN]_W[12]_(?:1|0-N_[07])\b/gm,
+      codes: /\bJ_W[12]_(?:1|0-N_[07])\b/gm,
       emojis: ["☀"]
+    },
+    { // Sun - night
+      codes: /\bN_W[12]_(?:1|0-N_[07])\b/gm,
+      emojis: ["🌙"]
     },
     { // Sun with small cloud
       codes: /\b[JN]_W1_0-N_5\b/gm,
