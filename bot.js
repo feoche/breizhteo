@@ -1,5 +1,6 @@
 import Twitter from 'twitter';
 import minimist from 'minimist';
+import puppeteer from 'puppeteer';
 import clipboardy from 'clipboardy';
 import request from 'request';
 import moment from 'moment';
@@ -17,15 +18,13 @@ const twitterAPI = new Twitter({
   access_token_secret: process.env.ACCESS_TOKEN_SECRET || args.access_token_secret
 });
 
-init();
-
 function init() {
   console.log(`Started`);
   const time = moment().format('YYYYMMDD') + ('00' + (data.HOURS.filter(a => a.time >= moment().get('hours'))[0] || data.HOURS[0]).time).substr(-2, 2);
 
   queryWeather(data.URLS[0].replace(/\$time\$/g, time)).then(res => {
     queryWeather(data.URLS[1].replace(/\$time\$/g, time)).then(() => {
-      console.info("dataItems : ", dataItems);
+      // console.info('dataItems : ', dataItems);
 
       tweet(`Prévisions pour ${res}:
       ${textToWeather('pictoTemps')}
@@ -33,9 +32,20 @@ function init() {
       ${textToWeather('pictoVent')}
       ${textToWeather('temperatureMer')}
       `);
+
+      /*async () => {
+        console.info('fjrn : ', fjrn);
+        const browser = await puppeteer.launch();
+        const page = await browser.newPage();
+        await page.goto('https://twitter.com/login');
+        await page.screenshot({path: 'google.png'});
+
+        await browser.close();
+      }*/
     });
   });
 }
+init();
 
 function tweet(text) {
   console.info(text);
@@ -119,7 +129,7 @@ function queryWeather(url) {
 
 function weather(index) {
   if (dataItems.filter(a => a.slug === data.DATACITIES[index]).length) {
-    console.info("data.DATACITIES[index] : ", data.DATACITIES[index]);
+    console.info('data.DATACITIES[index] : ', data.DATACITIES[index]);
     console.info('dataItems.filter(a,i => i === dataItems[index]) : ', dataItems.filter(a => a.slug === data.DATACITIES[index]));
   }
   return dataItems.filter(a => a.slug === data.DATACITIES[index])[0];
@@ -131,14 +141,14 @@ function textToWeather(type) {
     switch (char) {
       case '#':
       case 'w':
-        let point = "",
+        let point = '',
           wcity = weather(index)[type];
         switch (type) {
           case 'temperature' :
             if (previousSpace) {
               previousSpace = false;
             } else {
-              point += '\u2003';
+              point += '\xa0';
             }
             point += ('' + wcity).replace(/\w/g, a => data.SMALL_LETTERS[a]);
             break;
@@ -148,7 +158,7 @@ function textToWeather(type) {
               previousSpace = false;
             }
             if (wcity > -1) {
-              console.info("weather(index) : ", weather(index));
+              console.info('weather(index) : ', weather(index));
               point += ('' + wcity).replace(/\w/g, a => data.SMALL_LETTERS[a]) +
                 data.WEATHER.filter(a => (weather(index)['pictoTemps']).match(a.codes))[0].emojis[0];
             }
@@ -157,13 +167,13 @@ function textToWeather(type) {
             }
             break;
           case 'pictoVent' :
-            const wforce = (''+weather(index)['forceVent']).replace(/[\s<]/g, '').padStart(2, "0");
+            const wforce = ('' + weather(index)['forceVent']).replace(/[\s<]/g, '').padStart(2, '0');
             const emoji = data.WINDS.filter(a => a.codes.includes(wcity))[0].emojis;
             point = emoji[Math.min(emoji.length - 1, Math.max(0, Math.floor(wforce[0]) - 1))];
             break;
           case 'pictoTemps' :
           default:
-            console.info("wcity: ", index);
+            console.info('wcity: ', index);
             point = data.WEATHER.filter(a => wcity.match(a.codes))[0].emojis[0];
             break;
         }
