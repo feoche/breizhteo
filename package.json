@@ -14,18 +14,13 @@
   },
   "dependencies": {
     "clipboardy": "^1.2.3",
+    "eslint": "^5.2.0",
     "esm": "^3.0.71",
     "minimist": "^1.2.0",
     "moment": "^2.22.2",
+    "puppeteer": "^1.6.2",
     "request": "latest",
     "twitter": "^1.7.1"
-  },
-  "devDependencies": {
-    "eslint": "^4.19.1",
-    "eslint-config-airbnb": "^16.1.0",
-    "eslint-plugin-import": "^2.13.0",
-    "eslint-plugin-jsx-a11y": "^6.1.1",
-    "eslint-plugin-react": "^7.10.0"
   },
   "author": "François Eoche",
   "license": "ISC"

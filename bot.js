@@ -32,16 +32,6 @@ function init() {
       ${textToWeather('pictoVent')}
       ${textToWeather('temperatureMer')}
       `);
-
-      /*async () => {
-        console.info('fjrn : ', fjrn);
-        const browser = await puppeteer.launch();
-        const page = await browser.newPage();
-        await page.goto('https://twitter.com/login');
-        await page.screenshot({path: 'google.png'});
-
-        await browser.close();
-      }*/
     });
   });
 }
@@ -55,7 +45,10 @@ function tweet(text) {
     twitterAPI.post('statuses/update', {
         status: text.substring(0, 280)
       },
-      error => console.error('Error: ', error)
+      (error, tweet, response) => {
+        if(error) console.error('Error: ', error); throw error;
+        console.info("response : ", response);
+      }
     );
   }
 }
@@ -131,6 +124,7 @@ function weather(index) {
   if (dataItems.filter(a => a.slug === data.DATACITIES[index]).length) {
     console.info('data.DATACITIES[index] : ', data.DATACITIES[index]);
     console.info('dataItems.filter(a,i => i === dataItems[index]) : ', dataItems.filter(a => a.slug === data.DATACITIES[index]));
+    console.info("dataItems.filter(a => a.slug === data.DATACITIES[index])[0] : ", dataItems.filter(a => a.slug === data.DATACITIES[index])[0]);
   }
   return dataItems.filter(a => a.slug === data.DATACITIES[index])[0];
 }
@@ -173,7 +167,9 @@ function textToWeather(type) {
             break;
           case 'pictoTemps' :
           default:
-            console.info('wcity: ', index);
+            console.info("weather(index) : ", weather(index));
+            console.info("type : ", type);
+            console.info('wcity: ', wcity);
             point = data.WEATHER.filter(a => wcity.match(a.codes))[0].emojis[0];
             break;
         }

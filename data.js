@@ -41,7 +41,7 @@ const data = {
       emojis: ["🌙"]
     },
     { // Sun with small cloud
-      codes: /\b[JN]_W1_0-N_5\b/gm,
+      codes: /\b[JN]_W1_0-N_[125]\b/gm,
       emojis: ["🌤"]
     },
     { // Sun with cloud
