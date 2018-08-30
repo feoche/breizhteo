@@ -31,7 +31,7 @@ function init() {
             .then(t => {
               tweet({status: `Vent:\n${textToWeather('pictoVent')}`, in_reply_to_status_id: t.id_str})
                 .then(t => {
-                  tweet({status: `Côté mer:\n${textToWeather('temperatureMer')}`, in_reply_to_status_id: t.id_str});
+                  if(time > 12 && time < 18) tweet({status: `Côté mer:\n${textToWeather('temperatureMer')}`, in_reply_to_status_id: t.id_str});
                 });
             })
         });
