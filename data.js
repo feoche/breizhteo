@@ -41,7 +41,7 @@ const data = {
       emojis: ["🌙"]
     },
     { // Sun with small cloud
-      codes: /\b[JN]_W1_0-N_[125]\b/gm,
+      codes: /\b[JN]_W1_0-N_[0-9]\b/gm,
       emojis: ["🌤"]
     },
     { // Sun with cloud
@@ -91,7 +91,7 @@ const data = {
     {time: 18, label: "17h -> 20h"},
     {time: 21, label: "20h -> 23h"}
   ],
-  MAP: `_www____
+  MAP: `____www____
     w###ww_wwww
     _w####w####
     w##########

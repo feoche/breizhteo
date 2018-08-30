@@ -21,35 +21,45 @@ const twitterAPI = new Twitter({
 function init() {
   console.log(`Started`);
   const time = moment().format('YYYYMMDD') + ('00' + (data.HOURS.filter(a => a.time >= moment().get('hours'))[0] || data.HOURS[0]).time).substr(-2, 2);
-
   queryWeather(data.URLS[0].replace(/\$time\$/g, time)).then(res => {
     queryWeather(data.URLS[1].replace(/\$time\$/g, time)).then(() => {
       // console.info('dataItems : ', dataItems);
 
-      tweet(`Prévisions pour ${res}:
-      ${textToWeather('pictoTemps')}
-      ${textToWeather('temperature')}
-      ${textToWeather('pictoVent')}
-      ${textToWeather('temperatureMer')}
-      `);
+      tweet({status: `Prévisions pour ${res}:\n${textToWeather('pictoTemps')}`})
+        .then(t => {
+          tweet({status: `Températures:\n${textToWeather('temperature')}`, in_reply_to_status_id: t.id_str})
+            .then(t => {
+              tweet({status: `Vent:\n${textToWeather('pictoVent')}`, in_reply_to_status_id: t.id_str})
+                .then(t => {
+                  tweet({status: `Côté mer:\n${textToWeather('temperatureMer')}`, in_reply_to_status_id: t.id_str});
+                });
+            })
+        });
     });
   });
 }
+
 init();
 
-function tweet(text) {
-  console.info(text);
-  clipboardy.writeSync(text);
-  clipboardy.readSync();
+function tweet(options) {
+  options.status = options.status.substring(0, 280);
+  console.info(options.status);
+  if (args.test) {
+    clipboardy.writeSync(options.status);
+    clipboardy.readSync();
+  }
   if (!args.test) { // TWEET
-    twitterAPI.post('statuses/update', {
-        status: text.substring(0, 280)
-      },
-      (error, tweet, response) => {
-        if(error) console.error('Error: ', error); throw error;
-        console.info("response : ", response);
-      }
-    );
+    return new Promise((resolve, reject) => {
+      twitterAPI.post('statuses/update', options,
+        (error, tweet) => {
+          if (error) {
+            console.error('Error: ', error);
+            reject(error);
+          }
+          resolve(tweet);
+        }
+      )
+    });
   }
 }
 
@@ -120,17 +130,11 @@ function queryWeather(url) {
   });
 }
 
-function weather(index) {
-  if (dataItems.filter(a => a.slug === data.DATACITIES[index]).length) {
-    console.info('data.DATACITIES[index] : ', data.DATACITIES[index]);
-    console.info('dataItems.filter(a,i => i === dataItems[index]) : ', dataItems.filter(a => a.slug === data.DATACITIES[index]));
-    console.info("dataItems.filter(a => a.slug === data.DATACITIES[index])[0] : ", dataItems.filter(a => a.slug === data.DATACITIES[index])[0]);
-  }
-  return dataItems.filter(a => a.slug === data.DATACITIES[index])[0];
-}
-
 function textToWeather(type) {
   let index = 0, previousSpace = false;
+
+  const weather = index => dataItems.filter(a => a.slug === data.DATACITIES[index])[0];
+
   return data.MAP.split('').map(char => {
     switch (char) {
       case '#':
@@ -140,19 +144,18 @@ function textToWeather(type) {
         switch (type) {
           case 'temperature' :
             if (previousSpace) {
-              previousSpace = false;
+              previousSpace = !previousSpace;
             } else {
-              point += '\xa0';
+              point += '\u2003';
             }
             point += ('' + wcity).replace(/\w/g, a => data.SMALL_LETTERS[a]);
             break;
 
           case 'temperatureMer' :
             if (previousSpace) {
-              previousSpace = false;
+              previousSpace = !previousSpace;
             }
             if (wcity > -1) {
-              console.info('weather(index) : ', weather(index));
               point += ('' + wcity).replace(/\w/g, a => data.SMALL_LETTERS[a]) +
                 data.WEATHER.filter(a => (weather(index)['pictoTemps']).match(a.codes))[0].emojis[0];
             }
@@ -167,10 +170,11 @@ function textToWeather(type) {
             break;
           case 'pictoTemps' :
           default:
-            console.info("weather(index) : ", weather(index));
-            console.info("type : ", type);
-            console.info('wcity: ', wcity);
-            point = data.WEATHER.filter(a => wcity.match(a.codes))[0].emojis[0];
+            const res = data.WEATHER.filter(a => wcity.match(a.codes))[0];
+            if (!res) {
+              console.info("wcity : ", wcity);
+            }
+            point = res && res.emojis[0];
             break;
         }
         index++;
