@@ -1,6 +1,5 @@
 import Twitter from 'twitter';
 import minimist from 'minimist';
-import puppeteer from 'puppeteer';
 import clipboardy from 'clipboardy';
 import request from 'request';
 import moment from 'moment';
@@ -191,3 +190,22 @@ function textToWeather(type) {
     }
   }).join('');
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

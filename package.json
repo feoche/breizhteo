@@ -18,7 +18,6 @@
     "esm": "^3.0.71",
     "minimist": "^1.2.0",
     "moment": "^2.22.2",
-    "puppeteer": "^1.6.2",
     "request": "latest",
     "twitter": "^1.7.1"
   },
