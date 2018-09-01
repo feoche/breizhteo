@@ -19,23 +19,25 @@ const twitterAPI = new Twitter({
 
 function init() {
   console.log(`Started`);
-  const time = moment().format('YYYYMMDD') + ('00' + (data.HOURS.filter(a => a.time >= moment().get('hours'))[0] || data.HOURS[0]).time).substr(-2, 2);
-  queryWeather(data.URLS[0].replace(/\$time\$/g, time)).then(res => {
-    queryWeather(data.URLS[1].replace(/\$time\$/g, time)).then(() => {
-      // console.info('dataItems : ', dataItems);
+  setInterval(() => {
+    const time = moment().format('YYYYMMDD') + ('00' + (data.HOURS.filter(a => a.time >= moment().get('hours'))[0] || data.HOURS[0]).time).substr(-2, 2);
+    queryWeather(data.URLS[0].replace(/\$time\$/g, time)).then(res => {
+      queryWeather(data.URLS[1].replace(/\$time\$/g, time)).then(() => {
+        // console.info('dataItems : ', dataItems);
 
-      tweet({status: `Prévisions pour ${res}:\n${textToWeather('pictoTemps')}`})
-        .then(t => {
-          tweet({status: `Températures:\n${textToWeather('temperature')}`, in_reply_to_status_id: t.id_str})
-            .then(t => {
-              tweet({status: `Vent:\n${textToWeather('pictoVent')}`, in_reply_to_status_id: t.id_str})
-                .then(t => {
-                  if(time > 12 && time < 18) tweet({status: `Côté mer:\n${textToWeather('temperatureMer')}`, in_reply_to_status_id: t.id_str});
-                });
-            })
-        });
+        tweet({status: `Prévisions pour ${res}:\n${textToWeather('pictoTemps')}`})
+          .then(t => {
+            tweet({status: `Températures:\n${textToWeather('temperature')}`, in_reply_to_status_id: t.id_str})
+              .then(t => {
+                tweet({status: `Vent:\n${textToWeather('pictoVent')}`, in_reply_to_status_id: t.id_str})
+                  .then(t => {
+                    if(time > 12 && time < 18) tweet({status: `Côté mer:\n${textToWeather('temperatureMer')}`, in_reply_to_status_id: t.id_str});
+                  });
+              })
+          });
+      });
     });
-  });
+  }, 10800000);
 }
 
 init();
