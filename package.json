@@ -9,13 +9,13 @@
     "precommit": "lint"
   },
   "engines": {
-    "node": "^8.9.0",
+    "node": ">=8.9.0",
     "npm": ">=5"
   },
   "dependencies": {
     "clipboardy": "^1.2.3",
     "eslint": "^5.2.0",
-    "esm": "^3.0.71",
+    "esm": "^3.2.16",
     "minimist": "^1.2.0",
     "moment": "^2.22.2",
     "request": "latest",
