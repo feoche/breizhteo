@@ -18,7 +18,9 @@ const twitterAPI = new Twitter({
 });
 
 function init() {
-  console.log(`Started`);
+  console.log(
+      `\x1b[96m`, (`[` + new Date().toLocaleTimeString() + `]`).padStart(10),
+      `Started`);
   setInterval(() => {
     const time = moment().format('YYYYMMDD') + ('00' + (data.HOURS.filter(a => a.time >= moment().get('hours'))[0] || data.HOURS[0]).time).substr(-2, 2);
     queryWeather(data.URLS[0].replace(/\$time\$/g, time)).then(res => {
@@ -44,7 +46,9 @@ init();
 
 function tweet(options) {
   options.status = options.status.substring(0, 280);
-  console.info(options.status);
+  console.info(
+      `\x1b[96m`, (`[` + new Date().toLocaleTimeString() + `]`).padStart(10),
+      options.status);
   if (args.test) {
     clipboardy.writeSync(options.status);
     clipboardy.readSync();
@@ -54,7 +58,9 @@ function tweet(options) {
       twitterAPI.post('statuses/update', options,
         (error, tweet) => {
           if (error) {
-            console.error('Error: ', error);
+            console.error(
+                `\x1b[96m`, (`[` + new Date().toLocaleTimeString() + `]`).padStart(10),
+                'Error: ', error);
             reject(error);
           }
           resolve(tweet);
@@ -108,7 +114,9 @@ function queryWeather(url) {
     request(url, (error, response, body) => {
       if (error) {
         reject(error);
-        console.error('Error: ', error);
+        console.error(
+            `\x1b[96m`, (`[` + new Date().toLocaleTimeString() + `]`).padStart(10),
+            'Error: ', error);
       }
       else {
         const formattedResponse = JSON.parse(body).previsionLieux
@@ -173,7 +181,9 @@ function textToWeather(type) {
           default:
             const res = data.WEATHER.filter(a => wcity.match(a.codes))[0];
             if (!res) {
-              console.info("wcity : ", wcity);
+              console.info(
+                  `\x1b[96m`, (`[` + new Date().toLocaleTimeString() + `]`).padStart(10),
+                  "wcity : ", wcity);
             }
             point = res && res.emojis[0];
             break;
