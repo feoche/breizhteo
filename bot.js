@@ -21,7 +21,6 @@ function init() {
   console.log(
       `\x1b[96m`, (`[` + new Date().toLocaleTimeString() + `]`).padStart(10),
       `Started`);
-  setInterval(() => {
     const time = moment().format('YYYYMMDD') + ('00' + (data.HOURS.filter(a => a.time >= moment().get('hours'))[0] || data.HOURS[0]).time).substr(-2, 2);
     queryWeather(data.URLS[0].replace(/\$time\$/g, time)).then(res => {
       queryWeather(data.URLS[1].replace(/\$time\$/g, time)).then(() => {
@@ -39,7 +38,6 @@ function init() {
           });
       });
     });
-  }, 10800000);
 }
 
 init();
