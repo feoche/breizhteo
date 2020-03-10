@@ -1,6 +1,5 @@
 import Twitter from 'twitter';
 import minimist from 'minimist';
-import clipboardy from 'clipboardy';
 import request from 'request';
 import moment from 'moment';
 import {data} from './data.js';
@@ -47,10 +46,6 @@ function tweet(options) {
   console.info(
       `\x1b[96m`, (`[` + new Date().toLocaleTimeString() + `]`).padStart(10),
       options.status);
-  if (args.test) {
-    clipboardy.writeSync(options.status);
-    clipboardy.readSync();
-  }
   if (!args.test) { // TWEET
     return new Promise((resolve, reject) => {
       twitterAPI.post('statuses/update', options,
@@ -65,6 +60,8 @@ function tweet(options) {
         }
       )
     });
+  } else {
+      return new Promise((resolve) => resolve(true))
   }
 }
 
@@ -153,9 +150,11 @@ function textToWeather(type) {
             if (previousSpace) {
               previousSpace = !previousSpace;
             } else {
-              point += '\u2003';
+              point += '\u2002';
             }
-            point += ('' + wcity).replace(/\w/g, a => data.SMALL_LETTERS[a]);
+            point += ('' + wcity)
+                .replace(/\b([0-9]|1[0-9]|20)\b/g, a => data.ENCASED_LETTERS[a])
+                .replace(/\d/g, a => data.SMALL_LETTERS[a]);
             break;
 
           case 'temperatureMer' :
@@ -200,22 +199,6 @@ function textToWeather(type) {
     }
   }).join('');
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

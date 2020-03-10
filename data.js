@@ -115,7 +115,8 @@ const data = {
     // 7th row
     "quiberon", "redon", "redon"
   ],
-  SMALL_LETTERS: "⁰¹²³⁴⁵⁶⁷⁸⁹".split('')
+  SMALL_LETTERS: "⁰¹²³⁴⁵⁶⁷⁸⁹".split(''),
+  ENCASED_LETTERS: "₀₁₂₃₄₅₆₇₈₉⑩⓫⓬⓭⓮⓯⓰⓱⓲⓳⓴".split(''),
 };
 
 export {data};
